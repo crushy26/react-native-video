@@ -229,6 +229,7 @@ class ReactExoplayerView extends FrameLayout implements
 
     @Override
     public void onHostResume() {
+        Log.d("mytag","on host resume");
         if (!playInBackground || !isInBackground) {
             setPlayWhenReady(!isPaused);
         }
@@ -554,15 +555,18 @@ class ReactExoplayerView extends FrameLayout implements
 
     private void setPlayWhenReady(boolean playWhenReady) {
         if (player == null) {
+            Log.d("mytag","PLAYER_NULL");
             return;
         }
-
+        Log.d("mytag",""+playWhenReady);
         if (playWhenReady) {
             boolean hasAudioFocus = requestAudioFocus();
             if (hasAudioFocus) {
+                Log.d("mytag","PLAYer ready 3");
                 player.setPlayWhenReady(true);
             }
         } else {
+            Log.d("mytag","PLAYer ready 4");
             player.setPlayWhenReady(false);
         }
     }
@@ -572,11 +576,14 @@ class ReactExoplayerView extends FrameLayout implements
             switch (player.getPlaybackState()) {
                 case Player.STATE_IDLE:
                 case Player.STATE_ENDED:
+                    Log.d("mytag","STATE_ENDED");
                     initializePlayer();
                     break;
                 case Player.STATE_BUFFERING:
                 case Player.STATE_READY:
+                    Log.d("mytag","STATE_READY");
                     if (!player.getPlayWhenReady()) {
+                        Log.d("mytag","STATE_READY2");
                         setPlayWhenReady(true);
                     }
                     break;
@@ -593,6 +600,7 @@ class ReactExoplayerView extends FrameLayout implements
     }
 
     private void pausePlayback() {
+        Log.d("mytag","pausePlayback");
         if (player != null) {
             if (player.getPlayWhenReady()) {
                 setPlayWhenReady(false);
@@ -618,6 +626,7 @@ class ReactExoplayerView extends FrameLayout implements
     }
 
     private void updateResumePosition() {
+        Log.d("mytag","update resume position triggered");
         resumeWindow = player.getCurrentWindowIndex();
         resumePosition = player.isCurrentWindowSeekable() ? Math.max(0, player.getCurrentPosition())
                 : C.TIME_UNSET;
@@ -647,7 +656,7 @@ class ReactExoplayerView extends FrameLayout implements
         switch (focusChange) {
             case AudioManager.AUDIOFOCUS_LOSS:
                 eventEmitter.audioFocusChanged(false);
-                pausePlayback();
+//                pausePlayback();
                 audioManager.abandonAudioFocus(this);
                 break;
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
@@ -1164,11 +1173,14 @@ class ReactExoplayerView extends FrameLayout implements
     }
 
     public void setPausedModifier(boolean paused) {
+
         isPaused = paused;
         if (player != null) {
             if (!paused) {
+                Log.d("mytag","start playback");
                 startPlayback();
             } else {
+                Log.d("mytag","pause playback 2");
                 pausePlayback();
             }
         }
